@@ -1,0 +1,12 @@
+src/br/ufal/ic/myfood/exceptions/UsuarioJaExisteException.java
+src/br/ufal/ic/myfood/exceptions/UsuarioNaoExisteException.java
+src/br/ufal/ic/myfood/Facade.java
+src/br/ufal/ic/myfood/Main.java
+src/br/ufal/ic/myfood/models/Usuario.java
+src/br/ufal/ic/myfood/models/UsuarioManager.java
+src/br/ufal/ic/myfood/models/Empresa.java
+src/br/ufal/ic/myfood/models/EmpresaManager.java
+src/br/ufal/ic/myfood/models/Produto.java
+src/br/ufal/ic/myfood/models/ProdutoManager.java
+src/br/ufal/ic/myfood/models/JsonUtil.java
+src/br/ufal/ic/myfood/util/JsonUtil.java

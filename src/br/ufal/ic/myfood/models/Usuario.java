@@ -10,18 +10,14 @@ public class Usuario {
     private String endereco;
     private String cpf;
 
-    public Usuario(String nome, String email, String senha, String endereco) {
-        this(nome, email, senha, endereco, null);
-    }
-
-    public Usuario(String nome, String email, String senha, String endereco, String cpf) {
-        this.nome = nome;
-        this.email = email;
-        this.senha = senha;
-        this.endereco = endereco;
-        this.cpf = cpf;
-        this.id = UUID.randomUUID().toString();
-    }
+    public Usuario(String id, String nome, String email, String senha, String endereco, String cpf) {
+    this.id = id;
+    this.nome = nome;
+    this.email = email;
+    this.senha = senha;
+    this.endereco = endereco;
+    this.cpf = cpf;
+}
 
     public String getNome() {
         return nome;
