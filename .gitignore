@@ -27,3 +27,10 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+bin/
+data/
+*.class
+sources.txt
+data/*.json
+bin/

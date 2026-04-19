@@ -7,32 +7,37 @@ public class Facade {
     private UsuarioManager usuarioManager;
     private EmpresaManager empresaManager;
     private ProdutoManager produtoManager;
+    private PedidoManager  pedidoManager;
 
     public Facade() {
         this.usuarioManager = new UsuarioManager();
         this.empresaManager = new EmpresaManager(usuarioManager);
         this.produtoManager = new ProdutoManager(empresaManager);
+        this.pedidoManager  = new PedidoManager(usuarioManager, empresaManager, produtoManager);
     }
 
     public void zerarSistema() {
         JsonUtil.deleteFile("data/usuarios.json");
         JsonUtil.deleteFile("data/empresas.json");
         JsonUtil.deleteFile("data/produtos.json");
+        JsonUtil.deleteFile("data/pedidos.json");
 
         this.usuarioManager = new UsuarioManager();
         this.empresaManager = new EmpresaManager(usuarioManager);
         this.produtoManager = new ProdutoManager(empresaManager);
+        this.pedidoManager  = new PedidoManager(usuarioManager, empresaManager, produtoManager);
     }
 
-    public void encerrarSistema() {
-    }
+    public void encerrarSistema() {}
 
     // USUÁRIO
 
+    // Usuário cliente (sem CPF) > chama o método de 4 params do UsuarioManager
     public void criarUsuario(String nome, String email, String senha, String endereco) {
-        usuarioManager.criarUsuario(nome, email, senha, endereco, null);
+        usuarioManager.criarUsuario(nome, email, senha, endereco);
     }
 
+    // Dono de empresa (com CPF) > chama o método de 5 params do UsuarioManager
     public void criarUsuario(String nome, String email, String senha, String endereco, String cpf) {
         usuarioManager.criarUsuario(nome, email, senha, endereco, cpf);
     }
@@ -79,5 +84,31 @@ public class Facade {
 
     public String listarProdutos(String empresa) {
         return produtoManager.listarProdutos(empresa);
+    }
+
+    // PEDIDO
+
+    public String criarPedido(String cliente, String empresa) {
+        return pedidoManager.criarPedido(cliente, empresa);
+    }
+
+    public void adicionarProduto(String numero, String produto) {
+        pedidoManager.adicionarProduto(numero, produto);
+    }
+
+    public String getPedidos(String pedido, String atributo) {
+        return pedidoManager.getPedidos(pedido, atributo);
+    }
+
+    public void fecharPedido(String numero) {
+        pedidoManager.fecharPedido(numero);
+    }
+
+    public String getNumeroPedido(String cliente, String empresa, int indice) {
+        return pedidoManager.getNumeroPedido(cliente, empresa, indice);
+    }
+
+    public void removerProduto(String pedido, String produto) {
+        pedidoManager.removerProduto(pedido, produto);
     }
 }

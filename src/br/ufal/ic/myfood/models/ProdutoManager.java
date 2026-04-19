@@ -25,7 +25,7 @@ public class ProdutoManager {
 
         validar(nome, valor, categoria);
 
-        Empresa empresa = empresaManager.buscarPorId(idEmpresa);
+        empresaManager.buscarPorId(idEmpresa);
 
         for (Produto p : produtos) {
             if (p.getIdEmpresa().equals(idEmpresa) && p.getNome().equals(nome)) {
@@ -52,7 +52,6 @@ public class ProdutoManager {
         validar(nome, valor, categoria);
 
         Produto p = buscarPorId(idProduto);
-
         p.setNome(nome);
         p.setValor(valor);
         p.setCategoria(categoria);
@@ -62,23 +61,18 @@ public class ProdutoManager {
 
     public String getProduto(String nome, String idEmpresa, String atributo) {
 
-        Produto p = buscarPorNomeEempresa(nome, idEmpresa);
+        Produto p = buscarPorNomeEmpresa(nome, idEmpresa);
 
         if (atributo == null || atributo.trim().isEmpty()) {
             throw new IllegalArgumentException("Atributo nao existe");
         }
 
         switch (atributo) {
-            case "nome":
-                return p.getNome();
-            case "valor":
-                return String.format(Locale.US, "%.2f", p.getValor());
-            case "categoria":
-                return p.getCategoria();
-            case "empresa":
-                return empresaManager.buscarPorId(idEmpresa).getNome();
-            default:
-                throw new IllegalArgumentException("Atributo nao existe");
+            case "nome":      return p.getNome();
+            case "valor":     return String.format(Locale.US, "%.2f", p.getValor());
+            case "categoria": return p.getCategoria();
+            case "empresa":   return empresaManager.buscarPorId(idEmpresa).getNome();
+            default:          throw new IllegalArgumentException("Atributo nao existe");
         }
     }
 
@@ -91,7 +85,6 @@ public class ProdutoManager {
         }
 
         List<String> nomes = new ArrayList<>();
-
         for (Produto p : produtos) {
             if (p.getIdEmpresa().equals(idEmpresa)) {
                 nomes.add(p.getNome());
@@ -101,25 +94,21 @@ public class ProdutoManager {
         return "{[" + String.join(", ", nomes) + "]}";
     }
 
-    // AUXILIARES
+    // buscarPorId é público para uso no PedidoManager
 
-    private Produto buscarPorId(String id) {
+    public Produto buscarPorId(String id) {
         for (Produto p : produtos) {
-            if (p.getId().equals(id)) {
-                return p;
-            }
+            if (p.getId().equals(id)) return p;
         }
         throw new IllegalArgumentException("Produto nao cadastrado");
     }
 
-    private Produto buscarPorNomeEempresa(String nome, String idEmpresa) {
-
+    private Produto buscarPorNomeEmpresa(String nome, String idEmpresa) {
         for (Produto p : produtos) {
             if (p.getIdEmpresa().equals(idEmpresa) && p.getNome().equals(nome)) {
                 return p;
             }
         }
-
         throw new IllegalArgumentException("Produto nao encontrado");
     }
 
@@ -137,8 +126,6 @@ public class ProdutoManager {
             throw new IllegalArgumentException("Categoria invalido");
         }
     }
-
-    // JSON
 
     private List<Produto> carregar() {
         try {
