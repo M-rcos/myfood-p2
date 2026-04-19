@@ -131,7 +131,7 @@ public class EmpresaManager {
     // Auxiliar privado >> resolve null/vazio como "sem permissão"
 
     private Usuario buscarDonoOuErro(String idDono) {
-        // ID nulo ou vazio → usuário não tem permissão (não é dono)
+        // ID nulo ou vazio > usuário não tem permissão (não é dono)
         if (idDono == null || idDono.trim().isEmpty()) {
             throw new IllegalArgumentException("Usuario nao pode criar uma empresa");
         }
@@ -141,7 +141,7 @@ public class EmpresaManager {
         } catch (Exception e) {
             throw new IllegalArgumentException("Usuario nao cadastrado");
         }
-        // Usuários sem CPF são clientes — não podem criar empresa
+        // Usuários sem CPF são clientes —> não podem criar empresa
         if (dono.getCpf() == null || dono.getCpf().trim().isEmpty()) {
             throw new IllegalArgumentException("Usuario nao pode criar uma empresa");
         }
