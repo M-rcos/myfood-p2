@@ -128,7 +128,7 @@ public class EmpresaManager {
         throw new IllegalArgumentException("Empresa nao cadastrada");
     }
 
-    // Auxiliar privado — resolve null/vazio como "sem permissão"
+    // Auxiliar privado >> resolve null/vazio como "sem permissão"
 
     private Usuario buscarDonoOuErro(String idDono) {
         // ID nulo ou vazio → usuário não tem permissão (não é dono)
