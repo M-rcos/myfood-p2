@@ -8,26 +8,26 @@ public class UsuarioManager {
 
     private List<Usuario> usuarios;
     private int proximoId;
-
     private final String PATH = "data/usuarios.json";
 
     public UsuarioManager() {
-        this.usuarios = carregar();
+        this.usuarios  = carregar();
         this.proximoId = usuarios.size() + 1;
     }
 
-    // Chamado pela Facade quando NÃO há cpf (usuário cliente)
+    // criarUsuario — cliente (sem CPF)
+
     public void criarUsuario(String nome, String email, String senha, String endereco) {
         validarCamposBasicos(nome, email, senha, endereco);
         checarEmailDuplicado(email);
-        usuarios.add(new Usuario(String.valueOf(proximoId++), nome, email, senha, endereco, null));
+        usuarios.add(new Usuario(String.valueOf(proximoId++), nome, email, senha, endereco, (String) null));
         salvar();
     }
 
-    // Chamado pela Facade quando HÁ cpf (dono de empresa)
+    // criarUsuario — dono de empresa (com CPF)
+
     public void criarUsuario(String nome, String email, String senha, String endereco, String cpf) {
         validarCamposBasicos(nome, email, senha, endereco);
-        // CPF sempre obrigatório nesta versão, null e vazio são inválidos
         if (cpf == null || cpf.trim().isEmpty() || cpf.length() != 14) {
             throw new IllegalArgumentException("CPF invalido");
         }
@@ -35,6 +35,33 @@ public class UsuarioManager {
         usuarios.add(new Usuario(String.valueOf(proximoId++), nome, email, senha, endereco, cpf));
         salvar();
     }
+
+    // criarUsuario — entregador (com veiculo e placa)
+
+    public void criarUsuario(String nome, String email, String senha,
+                             String endereco, String veiculo, String placa) {
+        validarCamposBasicos(nome, email, senha, endereco);
+
+        if (veiculo == null || veiculo.trim().isEmpty()) {
+            throw new IllegalArgumentException("Veiculo invalido");
+        }
+        if (placa == null || placa.trim().isEmpty()) {
+            throw new IllegalArgumentException("Placa invalido");
+        }
+
+        // Placa deve ser única
+        for (Usuario u : usuarios) {
+            if (placa.equals(u.getPlaca())) {
+                throw new IllegalArgumentException("Placa invalido");
+            }
+        }
+
+        checarEmailDuplicado(email);
+        usuarios.add(new Usuario(String.valueOf(proximoId++), nome, email, senha, endereco, veiculo, placa));
+        salvar();
+    }
+
+    // getAtributoUsuario
 
     public String getAtributoUsuario(String id, String atributo) {
         Usuario u = buscarPorId(id);
@@ -47,9 +74,13 @@ public class UsuarioManager {
             case "senha":    return u.getSenha();
             case "endereco": return u.getEndereco();
             case "cpf":      return u.getCpf();
+            case "veiculo":  return u.getVeiculo();
+            case "placa":    return u.getPlaca();
             default:         throw new IllegalArgumentException("Atributo invalido");
         }
     }
+
+    // login
 
     public String login(String email, String senha) {
         if (email == null || email.isEmpty() || senha == null || senha.isEmpty()) {
@@ -63,6 +94,8 @@ public class UsuarioManager {
         throw new IllegalArgumentException("Login ou senha invalidos");
     }
 
+    // Auxiliares públicos
+
     public Usuario buscarPorId(String id) {
         for (Usuario u : usuarios) {
             if (u.getId().equals(id)) return u;
@@ -70,7 +103,7 @@ public class UsuarioManager {
         throw new IllegalArgumentException("Usuario nao cadastrado.");
     }
 
-    // Auxiliares
+    // Validações privadas
 
     private void checarEmailDuplicado(String email) {
         for (Usuario u : usuarios) {

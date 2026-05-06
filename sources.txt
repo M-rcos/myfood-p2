@@ -10,5 +10,8 @@ src/br/ufal/ic/myfood/models/EmpresaManager.java
 src/br/ufal/ic/myfood/models/Pedido.java
 src/br/ufal/ic/myfood/models/PedidoManager.java
 src/br/ufal/ic/myfood/models/ProdutoManager.java
+src/br/ufal/ic/myfood/models/EntregadorManager.java
+src/br/ufal/ic/myfood/models/EntregaManager.java
+src/br/ufal/ic/myfood/models/Entrega.java
 src/br/ufal/ic/myfood/util/JsonUtil.java
 src/br/ufal/ic/myfood/Facade.java

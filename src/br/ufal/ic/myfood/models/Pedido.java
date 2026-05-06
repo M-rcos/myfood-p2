@@ -12,27 +12,22 @@ public class Pedido {
     private List<String> produtos;
 
     public Pedido(String id, String idCliente, String idEmpresa) {
-        this.id = id;
+        this.id        = id;
         this.idCliente = idCliente;
         this.idEmpresa = idEmpresa;
-        this.estado = "aberto";
-        this.produtos = new ArrayList<>();
+        this.estado    = "aberto";
+        this.produtos  = new ArrayList<>();
     }
 
-    public String getId()        { return id; }
-    public String getIdCliente() { return idCliente; }
-    public String getIdEmpresa() { return idEmpresa; }
-    public String getEstado()    { return estado; }
-
+    public String getId()             { return id; }
+    public String getIdCliente()      { return idCliente; }
+    public String getIdEmpresa()      { return idEmpresa; }
+    public String getEstado()         { return estado; }
     public List<String> getProdutos() { return produtos; }
 
-    public void fechar() { this.estado = "preparando"; }
+    public void fechar()             { this.estado = "preparando"; }
+    public void liberar()            { this.estado = "pronto"; }
+    public void setEstado(String s)  { this.estado = s; }
 
-    public void addProduto(String idProduto) {
-        produtos.add(idProduto);
-    }
-
-    public void removerProduto(String idProduto) {
-        produtos.remove(idProduto);
-    }
+    public void addProduto(String idProduto) { produtos.add(idProduto); }
 }
