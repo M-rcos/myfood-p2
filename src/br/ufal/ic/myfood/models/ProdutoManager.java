@@ -1,5 +1,6 @@
 package br.ufal.ic.myfood.models;
 
+import br.ufal.ic.myfood.exceptions.MyFoodException;
 import java.util.*;
 
 public class ProdutoManager {
@@ -30,7 +31,7 @@ public class ProdutoManager {
         List<Produto> lista = carregar();
         for (Produto p : lista)
             if (p.getIdEmpresa().equals(idEmpresa) && p.getNome().equals(nome))
-                throw new IllegalArgumentException("Ja existe um produto com esse nome para essa empresa");
+                throw new MyFoodException("Ja existe um produto com esse nome para essa empresa");
         Produto novo = new Produto(String.valueOf(lista.size() + 1), idEmpresa, nome, valor, categoria);
         lista.add(novo);
         salvar(lista);
@@ -47,20 +48,20 @@ public class ProdutoManager {
 
     public String getProduto(String nome, String idEmpresa, String atributo) {
         if (atributo == null || atributo.trim().isEmpty())
-            throw new IllegalArgumentException("Atributo nao existe");
+            throw new MyFoodException("Atributo nao existe");
         Produto p = buscarPorNomeEmpresa(nome, idEmpresa);
         switch (atributo) {
             case "nome":      return p.getNome();
             case "valor":     return String.format(java.util.Locale.US, "%.2f", p.getValor());
             case "categoria": return p.getCategoria();
             case "empresa":   return empresaManager.buscarPorId(idEmpresa).getNome();
-            default: throw new IllegalArgumentException("Atributo nao existe");
+            default: throw new MyFoodException("Atributo nao existe");
         }
     }
 
     public String listarProdutos(String idEmpresa) {
         try { empresaManager.buscarPorId(idEmpresa); }
-        catch (Exception e) { throw new IllegalArgumentException("Empresa nao encontrada"); }
+        catch (Exception e) { throw new MyFoodException("Empresa nao encontrada"); }
         List<String> nomes = new ArrayList<>();
         for (Produto p : carregar())
             if (p.getIdEmpresa().equals(idEmpresa)) nomes.add(p.getNome());
@@ -70,27 +71,27 @@ public class ProdutoManager {
     public Produto buscarPorId(String id) {
         for (Produto p : carregar())
             if (p.getId().equals(id)) return p;
-        throw new IllegalArgumentException("Produto nao cadastrado");
+        throw new MyFoodException("Produto nao cadastrado");
     }
 
     private Produto buscarPorIdNaLista(List<Produto> lista, String id) {
         for (Produto p : lista)
             if (p.getId().equals(id)) return p;
-        throw new IllegalArgumentException("Produto nao cadastrado");
+        throw new MyFoodException("Produto nao cadastrado");
     }
 
     private Produto buscarPorNomeEmpresa(String nome, String idEmpresa) {
         for (Produto p : carregar())
             if (p.getIdEmpresa().equals(idEmpresa) && p.getNome().equals(nome)) return p;
-        throw new IllegalArgumentException("Produto nao encontrado");
+        throw new MyFoodException("Produto nao encontrado");
     }
 
     private void validar(String nome, double valor, String categoria) {
         if (nome == null || nome.trim().isEmpty())
-            throw new IllegalArgumentException("Nome invalido");
+            throw new MyFoodException("Nome invalido");
         if (valor < 0)
-            throw new IllegalArgumentException("Valor invalido");
+            throw new MyFoodException("Valor invalido");
         if (categoria == null || categoria.trim().isEmpty())
-            throw new IllegalArgumentException("Categoria invalido");
+            throw new MyFoodException("Categoria invalido");
     }
 }

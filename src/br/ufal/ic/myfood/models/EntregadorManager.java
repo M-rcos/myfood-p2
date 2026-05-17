@@ -1,5 +1,6 @@
 package br.ufal.ic.myfood.models;
 
+import br.ufal.ic.myfood.exceptions.MyFoodException;
 import java.util.*;
 
 public class EntregadorManager {
@@ -33,7 +34,7 @@ public class EntregadorManager {
         empresaManager.buscarPorId(idEmpresa);
         Usuario u = usuarioManager.buscarPorId(idEntregador);
         if (!u.isEntregador())
-            throw new IllegalArgumentException("Usuario nao e um entregador");
+            throw new MyFoodException("Usuario nao e um entregador");
         List<String[]> lista = carregar();
         for (String[] v : lista)
             if (v[0].equals(idEmpresa) && v[1].equals(idEntregador)) return;
@@ -53,7 +54,7 @@ public class EntregadorManager {
     public String getEmpresas(String idEntregador) {
         Usuario u = usuarioManager.buscarPorId(idEntregador);
         if (!u.isEntregador())
-            throw new IllegalArgumentException("Usuario nao e um entregador");
+            throw new MyFoodException("Usuario nao e um entregador");
         List<String> itens = new ArrayList<>();
         for (String[] v : carregar())
             if (v[1].equals(idEntregador)) {

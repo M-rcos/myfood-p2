@@ -1,5 +1,6 @@
 package br.ufal.ic.myfood.models;
 
+import br.ufal.ic.myfood.exceptions.MyFoodException;
 import java.util.*;
 
 public class PedidoManager {
@@ -30,13 +31,13 @@ public class PedidoManager {
         usuarioManager.buscarPorId(idCliente);
         for (Empresa e : empresaManager.getTodas())
             if (e.getIdDono().equals(idCliente))
-                throw new IllegalArgumentException("Dono de empresa nao pode fazer um pedido");
+                throw new MyFoodException("Dono de empresa nao pode fazer um pedido");
         empresaManager.buscarPorId(idEmpresa);
         List<Pedido> lista = carregar();
         for (Pedido p : lista)
             if (p.getIdCliente().equals(idCliente) && p.getIdEmpresa().equals(idEmpresa)
                     && p.getEstado().equals("aberto"))
-                throw new IllegalArgumentException("Nao e permitido ter dois pedidos em aberto para a mesma empresa");
+                throw new MyFoodException("Nao e permitido ter dois pedidos em aberto para a mesma empresa");
         Pedido novo = new Pedido(String.valueOf(lista.size() + 1), idCliente, idEmpresa);
         lista.add(novo);
         salvar(lista);
@@ -46,22 +47,22 @@ public class PedidoManager {
     public void adicionarProduto(String numero, String idProduto) {
         List<Pedido> lista = carregar();
         Pedido p = buscarPorIdNaLista(lista, numero);
-        if (p == null) throw new IllegalArgumentException("Nao existe pedido em aberto");
+        if (p == null) throw new MyFoodException("Nao existe pedido em aberto");
         if (!p.getEstado().equals("aberto"))
-            throw new IllegalArgumentException("Nao e possivel adcionar produtos a um pedido fechado");
+            throw new MyFoodException("Nao e possivel adcionar produtos a um pedido fechado");
         Produto prod = produtoManager.buscarPorId(idProduto);
         if (!prod.getIdEmpresa().equals(p.getIdEmpresa()))
-            throw new IllegalArgumentException("O produto nao pertence a essa empresa");
+            throw new MyFoodException("O produto nao pertence a essa empresa");
         p.addProduto(idProduto);
         salvar(lista);
     }
 
     public String getPedidos(String id, String atributo) {
         if (atributo == null || atributo.trim().isEmpty())
-            throw new IllegalArgumentException("Atributo invalido");
+            throw new MyFoodException("Atributo invalido");
         List<Pedido> lista = carregar();
         Pedido p = buscarPorIdNaLista(lista, id);
-        if (p == null) throw new IllegalArgumentException("Pedido nao encontrado");
+        if (p == null) throw new MyFoodException("Pedido nao encontrado");
         switch (atributo) {
             case "cliente": return usuarioManager.buscarPorId(p.getIdCliente()).getNome();
             case "empresa":  return empresaManager.buscarPorId(p.getIdEmpresa()).getNome();
@@ -76,14 +77,14 @@ public class PedidoManager {
                 for (String pid : p.getProdutos()) total += produtoManager.buscarPorId(pid).getValor();
                 return String.format(java.util.Locale.US, "%.2f", total);
             }
-            default: throw new IllegalArgumentException("Atributo nao existe");
+            default: throw new MyFoodException("Atributo nao existe");
         }
     }
 
     public void fecharPedido(String numero) {
         List<Pedido> lista = carregar();
         Pedido p = buscarPorIdNaLista(lista, numero);
-        if (p == null) throw new IllegalArgumentException("Pedido nao encontrado");
+        if (p == null) throw new MyFoodException("Pedido nao encontrado");
         p.fechar();
         salvar(lista);
     }
@@ -91,11 +92,11 @@ public class PedidoManager {
     public void liberarPedido(String numero) {
         List<Pedido> lista = carregar();
         Pedido p = buscarPorIdNaLista(lista, numero);
-        if (p == null) throw new IllegalArgumentException("Pedido nao encontrado");
+        if (p == null) throw new MyFoodException("Pedido nao encontrado");
         if (p.getEstado().equals("pronto"))
-            throw new IllegalArgumentException("Pedido ja liberado");
+            throw new MyFoodException("Pedido ja liberado");
         if (!p.getEstado().equals("preparando"))
-            throw new IllegalArgumentException("Nao e possivel liberar um produto que nao esta sendo preparado");
+            throw new MyFoodException("Nao e possivel liberar um produto que nao esta sendo preparado");
         p.liberar();
         salvar(lista);
     }
@@ -107,18 +108,18 @@ public class PedidoManager {
                 ids.add(p.getId());
         ids.sort((a, b) -> Integer.parseInt(a) - Integer.parseInt(b));
         if (indice < 0 || indice >= ids.size())
-            throw new IllegalArgumentException("Pedido nao encontrado");
+            throw new MyFoodException("Pedido nao encontrado");
         return ids.get(indice);
     }
 
     public void removerProduto(String idPedido, String nome) {
         if (nome == null || nome.trim().isEmpty())
-            throw new IllegalArgumentException("Produto invalido");
+            throw new MyFoodException("Produto invalido");
         List<Pedido> lista = carregar();
         Pedido p = buscarPorIdNaLista(lista, idPedido);
-        if (p == null) throw new IllegalArgumentException("Pedido nao encontrado");
+        if (p == null) throw new MyFoodException("Pedido nao encontrado");
         if (!p.getEstado().equals("aberto"))
-            throw new IllegalArgumentException("Nao e possivel remover produtos de um pedido fechado");
+            throw new MyFoodException("Nao e possivel remover produtos de um pedido fechado");
         List<String> prods = p.getProdutos();
         for (int i = 0; i < prods.size(); i++) {
             if (produtoManager.buscarPorId(prods.get(i)).getNome().equals(nome)) {
@@ -127,7 +128,7 @@ public class PedidoManager {
                 return;
             }
         }
-        throw new IllegalArgumentException("Produto nao encontrado");
+        throw new MyFoodException("Produto nao encontrado");
     }
 
     public List<Pedido> getPedidosProntos() {
@@ -140,7 +141,7 @@ public class PedidoManager {
     public void setEstado(String idPedido, String novoEstado) {
         List<Pedido> lista = carregar();
         Pedido p = buscarPorIdNaLista(lista, idPedido);
-        if (p == null) throw new IllegalArgumentException("Pedido nao encontrado");
+        if (p == null) throw new MyFoodException("Pedido nao encontrado");
         p.setEstado(novoEstado);
         salvar(lista);
     }

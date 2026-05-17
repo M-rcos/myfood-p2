@@ -1,5 +1,6 @@
 package br.ufal.ic.myfood.models;
 
+import br.ufal.ic.myfood.exceptions.MyFoodException;
 import java.io.File;
 import java.util.*;
 
@@ -31,7 +32,7 @@ public class UsuarioManager {
     public void criarUsuario(String nome, String email, String senha, String endereco, String cpf) {
         validarCamposBasicos(nome, email, senha, endereco);
         if (cpf == null || cpf.trim().isEmpty() || cpf.length() != 14)
-            throw new IllegalArgumentException("CPF invalido");
+            throw new MyFoodException("CPF invalido");
         List<Usuario> lista = carregar();
         checarEmailDuplicado(lista, email);
         lista.add(new Usuario(String.valueOf(lista.size() + 1), nome, email, senha, endereco, cpf));
@@ -42,12 +43,12 @@ public class UsuarioManager {
                              String endereco, String veiculo, String placa) {
         validarCamposBasicos(nome, email, senha, endereco);
         if (veiculo == null || veiculo.trim().isEmpty())
-            throw new IllegalArgumentException("Veiculo invalido");
+            throw new MyFoodException("Veiculo invalido");
         if (placa == null || placa.trim().isEmpty())
-            throw new IllegalArgumentException("Placa invalido");
+            throw new MyFoodException("Placa invalido");
         List<Usuario> lista = carregar();
         for (Usuario u : lista)
-            if (placa.equals(u.getPlaca())) throw new IllegalArgumentException("Placa invalido");
+            if (placa.equals(u.getPlaca())) throw new MyFoodException("Placa invalido");
         checarEmailDuplicado(lista, email);
         lista.add(new Usuario(String.valueOf(lista.size() + 1), nome, email, senha, endereco, veiculo, placa));
         salvar(lista);
@@ -56,7 +57,7 @@ public class UsuarioManager {
     public String getAtributoUsuario(String id, String atributo) {
         Usuario u = buscarPorId(id);
         if (atributo == null || atributo.trim().isEmpty())
-            throw new IllegalArgumentException("Atributo invalido");
+            throw new MyFoodException("Atributo invalido");
         switch (atributo) {
             case "nome":     return u.getNome();
             case "email":    return u.getEmail();
@@ -65,38 +66,38 @@ public class UsuarioManager {
             case "cpf":      return u.getCpf();
             case "veiculo":  return u.getVeiculo();
             case "placa":    return u.getPlaca();
-            default: throw new IllegalArgumentException("Atributo invalido");
+            default: throw new MyFoodException("Atributo invalido");
         }
     }
 
     public String login(String email, String senha) {
         if (email == null || email.isEmpty() || senha == null || senha.isEmpty())
-            throw new IllegalArgumentException("Login ou senha invalidos");
+            throw new MyFoodException("Login ou senha invalidos");
         for (Usuario u : carregar())
             if (u.getEmail().equals(email) && u.getSenha().equals(senha)) return u.getId();
-        throw new IllegalArgumentException("Login ou senha invalidos");
+        throw new MyFoodException("Login ou senha invalidos");
     }
 
     public Usuario buscarPorId(String id) {
         for (Usuario u : carregar())
             if (u.getId().equals(id)) return u;
-        throw new IllegalArgumentException("Usuario nao cadastrado.");
+        throw new MyFoodException("Usuario nao cadastrado.");
     }
 
     private void checarEmailDuplicado(List<Usuario> lista, String email) {
         for (Usuario u : lista)
             if (u.getEmail().equals(email))
-                throw new IllegalArgumentException("Conta com esse email ja existe");
+                throw new MyFoodException("Conta com esse email ja existe");
     }
 
     private void validarCamposBasicos(String nome, String email, String senha, String endereco) {
         if (nome == null || nome.trim().isEmpty())
-            throw new IllegalArgumentException("Nome invalido");
+            throw new MyFoodException("Nome invalido");
         if (email == null || email.trim().isEmpty() || !email.contains("@"))
-            throw new IllegalArgumentException("Email invalido");
+            throw new MyFoodException("Email invalido");
         if (senha == null || senha.trim().isEmpty())
-            throw new IllegalArgumentException("Senha invalido");
+            throw new MyFoodException("Senha invalido");
         if (endereco == null || endereco.trim().isEmpty())
-            throw new IllegalArgumentException("Endereco invalido");
+            throw new MyFoodException("Endereco invalido");
     }
 }
